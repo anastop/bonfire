@@ -25,7 +25,8 @@ if __name__ == '__main__':
     """
 
     logging.getLogger().setLevel(logging.DEBUG)
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('--json-config',
                         required=True,
@@ -33,7 +34,6 @@ if __name__ == '__main__':
                         dest='json_config',
                         action='store',
                         help='Configuration file (JSON)')
-
 
     args = parser.parse_args()
     conf = {}
@@ -57,25 +57,23 @@ if __name__ == '__main__':
             server_remote_path,
             config_file))
 
-
-
     ssh_sessions = {}
     total_ips = [conf['server_ip']]
-    for curr_ip in total_ips :
+    for curr_ip in total_ips:
         print('Initiating session with Multinet VM.')
         session = netutil.ssh_connect_or_return(curr_ip, username,
-                                                     password, 10, ssh_port)
+                                                password, 10, ssh_port)
         ssh_sessions[curr_ip] = session
 
         print('Create remote directory in Multinet for storing files.')
         netutil.create_remote_directory(curr_ip, username, password,
-                                             '/tmp/profile-anywhere/', ssh_port)
+                                        '/tmp/profile-anywhere/', ssh_port)
 
         print('Copying handlers to Multinet VMs')
         netutil.copy_directory_to_target(curr_ip, username, password,
-                                              base_dir,
-                                              '/tmp/',
-                                              ssh_port)
+                                         base_dir,
+                                         '/tmp/',
+                                         ssh_port)
 
     netutil.ssh_run_command(ssh_sessions[server_ip], server_boot_command)
     logging.debug(
