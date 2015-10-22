@@ -1,3 +1,4 @@
+import bottle
 
 
 profiler_list = None
@@ -17,25 +18,36 @@ profiler_id = 0
 @bottle.route('/init', method='POST')
 def init(opts):
     global profiler_list
-    #sends the initial opts and starts the deamon
+    #recieves the initial opts and starts the deamon
     profiler_conf = bottle.request.json
     profiler_list.append(LinuxPerfRecorder(profiler_conf))
     profiler_id += 1
+    response.data = profiler_id
+    #here we send the profiler_id
 
 @bottle.route('/start/<profiler_id>', method='POST')
-def start(opts):
+def start(profiler_id):
     #in order to start a recording we get an opts argument
+    global profiler_list
     profiler_list[profiler_id].setup_karaf_env()
     profiler_list[profiler_id].start()
 
 @bottle.route('/stop/<profiler_id>', method='POST')
-def stop(opts):
+def stop(profiler_id):
     profiler_list[profiler_id].stop()
 
 @bottle.route('/get_data/<profiler_id>', method='POST')
-def get_data(opts):
+def get_data(profiler_id):
+    global profiler_list
+    opts = profiler_list[profiler_id].opts
+    return static_file(opts['recording_file'], opts['output_dir'])
     #here is the endpoint
-def get_flamegraph(opts):
+@bottle.route('/get_flamegraph/<profiler_id>', method='POST')
+def get_flamegraph(profiler_id):
+    global profiler_list
+    #here we should get the binary blobs
+    opts = profiler_list[profiler_id].opts
+    return static_file(opts['flamegraph_name'], opts['output_dir'])
 
 
 if __name__ == '__main__':
