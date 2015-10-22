@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     session = requests.Session()
     session.trust_env = False
-    url =
+    url = 'http://{0}:{1}/'.format()
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     post_call = session.post(
         url,
