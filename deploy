@@ -10,6 +10,7 @@ import time
 import logging
 import json
 import argparse
+import sys
 
 if __name__ == '__main__':
     """
@@ -51,9 +52,10 @@ if __name__ == '__main__':
     config_file = '/tmp/profile-anywhere/config/config.json'
     base_dir = '/'.join(server_remote_path.split('/')[:-2])
     #logging.info('PYTHONPATH=%s' % pythonpath)
+    pythonpath = ':'.join(['/'.join(base_dir.split('/')[:-2])] + sys.path)[1:]
     server_boot_command = (
         'PYTHONPATH={0} python {1} --json-config {2} > /tmp/profile-anywhere/server_log.txt 2>&1 &'.format(
-            base_dir,
+            pythonpath,
             server_remote_path,
             config_file))
 
