@@ -5,7 +5,7 @@ This script is responsible for deploying the multinet infrastructure
  across different VMs
 """
 
-import netutil
+import util.netutil
 import time
 import logging
 import json
