@@ -77,11 +77,23 @@ if __name__ == '__main__':
                         action='store',
                         help='Name of the resulting SVG')
     parser.add_argument('--generate-flamegraph',
-                        required=False,
+                        required=True,
                         type=str,
                         dest='generate_flamegraph',
                         action='store',
                         help='Whether or not to generate flamegraph')
+    parser.add_argument('--server-ip',
+                        required=True,
+                        type=str,
+                        dest='server_ip',
+                        action='store',
+                        help='Remote server ip')
+    parser.add_argument('--server-port',
+                        required=True,
+                        type=str,
+                        dest='server_port',
+                        action='store',
+                        help='Remote server port')
 
     args = parser.parse_args()
 
@@ -98,6 +110,16 @@ if __name__ == '__main__':
     opts['profiling_mode'] = args.profiling_mode
     opts['flamegraph_name'] = args.flamegraph_name
     opts['generate_flamegraph'] = args.generate_flamegraph
+
+
+    session = requests.Session()
+    session.trust_env = False
+    url =
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    post_call = session.post(
+        url,
+        data=json.dumps(opts),
+        headers=headers)
 
 
 #    with open(args.json_config) as conf_file:
