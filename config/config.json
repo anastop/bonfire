@@ -9,7 +9,8 @@
 		"password": "vagrant"
 	},
         "env": {
-		"JAVA_HOME": "",
+		    "JAVA_HOME": "",
+            "BONFIRE_HOME": "",
             "FLAMEGRAPH_HOME": "",
             "JFR2FLAME_HOME": "",
             "JFR2FLAME_BIN": "",
