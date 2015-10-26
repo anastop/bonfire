@@ -3,13 +3,14 @@
 
 # initialize setup_env_vars script
 
-if [ -z "${PANYWHERE_HOME}" ]; then
+if [ -z "${BONFIRE_HOME}" ]; then
+        export BONFIRE_HOME=`pwd`
         touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
-        echo "export PANYWHERE_HOME=`pwd`" >> setup_env_vars.sh
+        echo "export BONFIRE_HOME=`pwd`" >> setup_env_vars.sh
 else
-        cd $PANYWHERE_HOME
+        cd $BONFIRE_HOME
         touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
-        echo "export PANYWHERE_HOME=$PANYWHERE_HOME" >> setup_env_vars.sh
+        echo "export BONFIRE_HOME=$BONFIRE_HOME" >> setup_env_vars.sh
 fi
 
 # parse .gitmodules and create an array of submodules

@@ -10,9 +10,9 @@
 	},
         "env": {
 		"JAVA_HOME": "",
-                "FLAMEGRAPH_HOME": "",
-                "JFR2FLAME_HOME": "",
-                "JFR2FLAME_BIN": "",
-                "PERFMAPAGENT_HOME": ""                         
+            "FLAMEGRAPH_HOME": "",
+            "JFR2FLAME_HOME": "",
+            "JFR2FLAME_BIN": "",
+            "PERFMAPAGENT_HOME": ""                         
 	}
 }
