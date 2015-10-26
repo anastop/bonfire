@@ -43,35 +43,32 @@ if __name__ == '__main__':
     with open(args.json_config) as conf_file:
         conf = json.load(conf_file)
 
-    server_remote_path = '/tmp/profile-anywhere/profile_server.py'
+    server_remote_path = '/tmp/bonfire/profile_server.py'
     server_ip = conf['server_ip']
     server_port = conf['server_port']
     ssh_port = conf['deploy']['ssh_port']
     username = conf['deploy']['username']
     password = conf['deploy']['password']
     profiler_base_dir = conf['deploy']['base_dir']
+    logging.info("[profile base dir %s" % profiler_base_dir )
     # TODO hard-coded for now, fix later
-    config_file = '/tmp/profile-anywhere/config/config.json'
+    config_file = '/tmp/bonfire/config/config.json'
     base_dir = '/'.join(server_remote_path.split('/')[:-2])
     #logging.info('PYTHONPATH=%s' % pythonpath)
     pythonpath = ':'.join(['/'.join(base_dir.split('/')[:-2])] + sys.path)[1:]
     server_boot_command = (
-        'PYTHONPATH={0} python {1} --json-config {2} > /tmp/profile-anywhere/server_log.txt 2>&1 &'.format(
+        'PYTHONPATH={0} python {1} --json-config {2} > /tmp/bonfire/server_log.txt 2>&1 &'.format(
             pythonpath,
             server_remote_path,
             config_file))
 
-    ssh_sessions = {}
-    total_ips = [conf['server_ip']]
-    for curr_ip in total_ips:
-        session = util.netutil.ssh_connect_or_return(curr_ip, username,
+    session = util.netutil.ssh_connect_or_return(server_ip, username,
                                                 password, 10, ssh_port)
-        ssh_sessions[curr_ip] = session
 
-        util.netutil.create_remote_directory(curr_ip, username, password,
-                                        '/tmp/profile-anywhere/', ssh_port)
+    util.netutil.create_remote_directory(server_ip, username, password,
+                                        '/tmp/bonfire/', ssh_port)
 
-        util.netutil.copy_directory_to_target(curr_ip, username, password,
+    util.netutil.copy_directory_to_target(server_ip, username, password,
                                          base_dir,
                                          '/tmp/',
                                          ssh_port)
@@ -79,10 +76,10 @@ if __name__ == '__main__':
     #run the setup script on the remote endpoint
     target_script = './' + base_dir + '/bin/setup'
     create_config = base_dir + '/config/create_config_json.py'
-    util.netutil.ssh_run_command(ssh_sessions[server_ip],target_script)
+    util.netutil.ssh_run_command(session, target_script)
     #setup the configfile using the newly created
-    util.netutil.ssh_run_command(ssh_sessions[server_ip],'python {0}'.format(create_config))
-    util.netutil.ssh_run_command(ssh_sessions[server_ip], server_boot_command)
+    util.netutil.ssh_run_command(session, 'python {0}'.format(create_config))
+    util.netutil.ssh_run_command(session, server_boot_command)
     logging.debug(
         '[start master {0}] Boot command:  {1}'.format(
             server_ip,

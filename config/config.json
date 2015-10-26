@@ -1,19 +1,19 @@
 {
-	"server_ip" : "10.1.1.40",
-	"server_port": 3300,
+    "server_ip" : "10.1.1.40",
+    "server_port": 3300,
 
-	"deploy": {
-		"base_dir": "/home/vagrant/bonfire",
-		"ssh_port": 22,
-		"username": "vagrant",
-		"password": "vagrant"
-	},
-        "env": {
-		    "JAVA_HOME": "",
-            "BONFIRE_HOME": "",
-            "FLAMEGRAPH_HOME": "",
-            "JFR2FLAME_HOME": "",
-            "JFR2FLAME_BIN": "",
-            "PERFMAPAGENT_HOME": ""                         
-	}
+    "deploy": {
+        "base_dir": "/home/vagrant/bonfire",
+        "ssh_port": 22,
+        "username": "vagrant",
+        "password": "vagrant"
+    },
+    "env": {
+        "JAVA_HOME": "",
+        "BONFIRE_HOME": "",
+        "FLAMEGRAPH_HOME": "",
+        "JFR2FLAME_HOME": "",
+        "JFR2FLAME_BIN": "",
+        "PERFMAPAGENT_HOME": ""                         
+    }
 }
