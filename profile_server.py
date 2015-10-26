@@ -3,6 +3,7 @@
 import bottle
 import profilers.flight_recorder as jfr_rec
 import profilers.perf_recorder as perf_rec
+import os
 
 
 profilers = {
@@ -13,17 +14,21 @@ profilers = {
 
 profiler_list = None
 profiler_id = 0
-#opts['recording_file']
-#opts['output_dir']
-#opts['recording_name']
-#opts['pid']
-#opts['karaf_home']
-#opts['JAVA_HOME']
-#opts['JAVA_opts']
-#opts['karaf_profiling']
-#opts['profiling_mode'] #jrf or perf
-#opts['flamegraph_name']
-#opts['generate_flamegraph']
+
+
+@bottle.route('/init_env', method='POST')
+def init_env():
+    #recieves the initial opts and starts the deamon
+    env_conf = bottle.request.json
+    for key,value in env_conf:
+        if key in os.environ:
+            os.environ[key]+=' '+value
+        else:
+            os.environ[key]=value
+
+
+    #here we send the profiler_id
+    return bottle.HTTPResponse(status=200, body=bod)
 
 
 @bottle.route('/init/<profiler>', method='POST')
