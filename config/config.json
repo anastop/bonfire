@@ -3,7 +3,7 @@
 	"server_port": 3300,
 
 	"deploy": {
-		"bonfire_base_dir": "/home/vagrant/bonfire",
+		"base_dir": "/home/vagrant/bonfire",
 		"ssh_port": 22,
 		"username": "vagrant",
 		"password": "vagrant"
