@@ -1,2 +1,0 @@
-#!/bin/bash
-java -jar $JFR2FLAME_HOME/target/org.wso2.jmc.flamegraph-0.0.1-SNAPSHOT.jar $*

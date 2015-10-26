@@ -8,9 +8,11 @@
 ################################################################
 
 http_proxy = 'http://172.28.40.9:3128'
-odlp2_vm_basebox = 'ubuntu/trusty64'
-odlp2_vm_ram = '8192'
-odlp2_vm_cpus = '4'
+bonfire_vm_basebox = 'ubuntu/trusty64'
+bonfire_vm_ram = '8192'
+bonfire_vm_cpus = '2'
+bonfire_vm_private_network_ip = '10.1.1.40'
+bonfire_vm_hostname = 'bonfire'
 ################################################################
 
 
@@ -23,7 +25,7 @@ Vagrant.configure(2) do |config|
         if Vagrant.has_plugin?('vagrant-proxyconf')
             config.proxy.http = http_proxy
             config.proxy.https = http_proxy
-            config.proxy.no_proxy = 'localhost,127.0.0.1'
+            config.proxy.no_proxy = 'localhost,127.0.0.1,' + bonfire_vm_private_network_ip
         else
             abort("vagrant-proxyconf plugin missing. Exiting.")
         end
@@ -31,19 +33,26 @@ Vagrant.configure(2) do |config|
 
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
 
-    config.vm.define 'odlp2_ubuntu_box' do |machine|
 
-	    machine.vm.box = odlp2_vm_basebox
+    uid_bonfire = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + bonfire_vm_private_network_ip
+
+    config.vm.define 'bonfire_ubuntu_box' do |machine|
+
+	
+        machine.vm.box = bonfire_vm_basebox
+        puts "Bringing up VM with IP: " + bonfire_vm_private_network_ip
+
+        machine.vm.box = bonfire_vm_basebox
+        machine.vm.host_name = bonfire_vm_hostname + '.' + bonfire_vm_hostname
+        machine.vm.network :private_network, ip: bonfire_vm_private_network_ip
 
         machine.vm.provider :virtualbox do |vb|
             # Display the VirtualBox GUI when booting the machine
             #vb.gui = true
 
             # Customize the amount of memory on the VM:
-            vb.memory = odlp2_vm_ram
-            vb.cpus = odlp2_vm_cpus
-
-
+            vb.memory = bonfire_vm_ram
+            vb.cpus = bonfire_vm_cpus
             # change the network card hardware for better performance
             vb.customize ["modifyvm", :id, "--nictype1", "virtio" ]
             vb.customize ["modifyvm", :id, "--nictype2", "virtio" ]
@@ -55,8 +64,5 @@ Vagrant.configure(2) do |config|
     config.vm.provision :shell, privileged: true, :path => 'provisioning/java-setup.sh'
     config.vm.provision :shell, privileged: true, :path => 'provisioning/odl-setup.sh'
     config.vm.provision :shell, privileged: true, :path => 'provisioning/settings-xml-setup.sh'
-    config.vm.provision :shell, privileged: true, :path => 'provisioning/apt-clean.sh'
-    config.vm.provision :shell, privileged: true, :path => 'provisioning/zero-disk.sh'
-
 
 end
