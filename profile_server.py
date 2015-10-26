@@ -34,7 +34,7 @@ def init_env():
 @bottle.route('/init/<profiler>', method='POST')
 def init(profiler):
     global profiler_list
-    #recieves the initial opts and starts the deamon
+    #receives the initial opts and starts the deamon
     profiler_conf = bottle.request.json
     profiler_list.append(profilers[profiler](profiler_conf))
     profiler_id += 1
