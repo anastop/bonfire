@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Usage (prints every time): jfr2flame flightrecording.jfr flamegraph.svg"
+TEMP="/tmp/stacktrace_samples.txt"
+FILE=$1
+FLAME_FILE=$2
+$JFR2FLAME_HOME/bin/call_jfrflamegraph -f $FILE -o $TEMP
+cat $TEMP | $FLAMEGRAPH_HOME/flamegraph.pl > $FLAME_FILE

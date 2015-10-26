@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+# initialize setup_env_vars script
+if [ -z "${PANYWHERE_HOME}" ]; then
+        touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
+        echo "export PANYWHERE_HOME=`pwd`" >> setup_env_vars.sh
+else
+        cd $PANYWHERE_HOME
+        touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
+        echo "export PANYWHERE_HOME=$PANYWHERE_HOME" >> setup_env_vars.sh
+fi
+
+# parse .gitmodules and create an array of submodules
+submodules=("FlameGraph" "jfr-flame-graph" "perf-map-agent")
+
+
+# source all module setup scripts 
+for module in "${submodules[@]}"
+do
+	pushd setup_scripts/submodules/$module
+        source env.sh
+	popd
+done
+
+source setup_env_vars.sh
+
+rm -f setup_env_vars.sh 

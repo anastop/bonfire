@@ -1,0 +1,9 @@
+[submodule "submodules/FlameGraph"]
+	path = submodules/FlameGraph
+	url = http://github.com/brendangregg/FlameGraph
+[submodule "submodules/perf-map-agent"]
+	path = submodules/perf-map-agent
+	url = https://github.com/jrudolph/perf-map-agent
+[submodule "submodules/jfr-flame-graph"]
+	path = submodules/jfr-flame-graph
+	url = https://github.com/chrishantha/jfr-flame-graph
