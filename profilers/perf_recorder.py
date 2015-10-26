@@ -46,7 +46,7 @@ class LinuxPerfRecorder(profilers.abc_profiler.ABCProfiler):
         cpid = os.fork()
         if cpid == 0:
             # in child
-            cmd = 'sudo -u {0} {1}/utilities/jmaps_karaf'.format(os.environ['USER'], os.environ['ODLP2_HOME'])
+            cmd = 'sudo -u {0} {1}/utilities/jmaps_karaf'.format(os.environ['USER'], self.opts['BONFIRE_HOME'])
             logging.debug('[PERF FLAMEGRAPH]' + cmd)
             sp.call(cmd, shell=True)
             os._exit(0)
@@ -55,7 +55,7 @@ class LinuxPerfRecorder(profilers.abc_profiler.ABCProfiler):
             self.opts['pid'], _ = os.waitpid(cpid, 0)
             cmd = 'sudo perf script | {1}/stackcollapse-perf.pl | flamegraph.pl --color=java --hash > {2}'.format(
 #                perf_data_file,
-                os.environ['FLAMEGRAPH_HOME'],
+                self.opts['FLAMEGRAPH_HOME'],
                 flamegraph_file)
 #            cmd = 'mv perf.data {0}'.format(self.opts['recording_file'])
 #            cp.blockable_shell(cmd, block_shell=True)

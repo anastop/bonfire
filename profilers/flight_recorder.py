@@ -36,7 +36,7 @@ class FlightRecorder(profilers.abc_profiler.ABCProfiler):
     def generate_flamegraph(self, jfr_file, flamegraph_name):
         flamegraph_file = self.opts['output_dir'] + '/' + flamegraph_name + '.jfr.svg'
         cmd = '{0}/bin/jfr2flame {1} {2}'.format(
-            os.environ['JFR2FLAME_HOME'],
+            self.opts['JFR2FLAME_HOME'],
             jfr_file,
             flamegraph_file)
         logging.debug('[generating flamegraph] '+cmd)

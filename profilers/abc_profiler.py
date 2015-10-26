@@ -1,6 +1,6 @@
 import abc
 import logging
-
+import os
 
 class ABCProfiler(object):
     __metaclass__ = abc.ABCMeta
@@ -17,6 +17,11 @@ class ABCProfiler(object):
         export_jo = 'export JAVA_OPTS="$JAVA_OPTS {0}"'.format(join_opts)
         logging.debug("[JAVA OPTS] " + export_jo)
         return export_jo
+
+    @abc.abstractmethod
+    def setup_java_env(self):
+        os.environ['JAVA_OPTS'] = ' '.join(self.opts['java_opts'])
+        return os.environ['JAVA_OPTS']
 
     @abc.abstractmethod
     def setup_karaf_env(self):
