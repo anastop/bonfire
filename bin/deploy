@@ -77,9 +77,9 @@ if __name__ == '__main__':
                                          ssh_port)
 
     #run the setup script on the remote endpoint
-    target_script = base_dir + '/setup_scripts/submodules/setup_env_vars.sh'
+    target_script = './' + base_dir + '/bin/setup'
     create_config = base_dir + '/config/create_config_json.py'
-    netutil.ssh_run_command(ssh_sessions[server_ip],'python {0}'.format(target_script))
+    netutil.ssh_run_command(ssh_sessions[server_ip],target_script)
     #setup the configfile using the newly created
     netutil.ssh_run_command(ssh_sessions[server_ip],'python {0}'.format(create_config))
     netutil.ssh_run_command(ssh_sessions[server_ip], server_boot_command)
