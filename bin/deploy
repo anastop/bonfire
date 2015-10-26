@@ -36,12 +36,6 @@ if __name__ == '__main__':
                         dest='json_config',
                         action='store',
                         help='Configuration file (JSON)')
-    parser.add_argument('--env-config',
-                        required=True,
-                        type=str,
-                        dest='env_config',
-                        action='store',
-                        help='Configuration file for environment variables (JSON)')
 
     args = parser.parse_args()
     conf = {}
@@ -89,16 +83,3 @@ if __name__ == '__main__':
         '[start master {0}] Boot command:  {1}'.format(
             server_ip,
             server_boot_command))
-
-    env_conf={}
-    with open(args.env_config) as conf_file:
-        env_conf = json.load(conf_file)
-
-    session = requests.Session()
-    session.trust_env = False
-    url = 'http://{0}:{1}/init_env'.format(server_ip,server_port)
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-    post_call = session.post(
-        url,
-        data=json.dumps(env_conf),
-        headers=headers)

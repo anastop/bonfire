@@ -16,19 +16,14 @@ profiler_list = None
 profiler_id = 0
 
 
-@bottle.route('/init_env', method='POST')
-def init_env():
+
+def init_env(env_conf):
     #recieves the initial opts and starts the deamon
-    env_conf = bottle.request.json
     for key,value in env_conf:
         if key in os.environ:
             os.environ[key]+=' '+value
         else:
             os.environ[key]=value
-
-
-    #here we send the profiler_id
-    return bottle.HTTPResponse(status=200, body=bod)
 
 
 @bottle.route('/init/<profiler>', method='POST')
@@ -84,4 +79,5 @@ if __name__ == '__main__':
     conf = {}
     with open(args.json_config) as conf_file:
       conf = json.load(conf_file)
+    init_env(conf_file[env_conf])
     bottle.run(host=conf['master_ip'], port=host=conf['master_port'], debug=True)
