@@ -1,0 +1,62 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+################################################################
+################################################################
+####### VM configuration. DON'T FORGET TO CHANGE THESE  ########
+################################################################
+################################################################
+
+http_proxy = 'http://172.28.40.9:3128'
+odlp2_vm_basebox = 'ubuntu/trusty64'
+odlp2_vm_ram = '8192'
+odlp2_vm_cpus = '4'
+################################################################
+
+
+Vagrant.configure(2) do |config|
+
+	config.ssh.username = 'vagrant'
+	config.ssh.password = 'vagrant'
+
+    if !http_proxy.eql?''
+        if Vagrant.has_plugin?('vagrant-proxyconf')
+            config.proxy.http = http_proxy
+            config.proxy.https = http_proxy
+            config.proxy.no_proxy = 'localhost,127.0.0.1'
+        else
+            abort("vagrant-proxyconf plugin missing. Exiting.")
+        end
+    end
+
+    config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
+
+    config.vm.define 'odlp2_ubuntu_box' do |machine|
+
+	    machine.vm.box = odlp2_vm_basebox
+
+        machine.vm.provider :virtualbox do |vb|
+            # Display the VirtualBox GUI when booting the machine
+            #vb.gui = true
+
+            # Customize the amount of memory on the VM:
+            vb.memory = odlp2_vm_ram
+            vb.cpus = odlp2_vm_cpus
+
+
+            # change the network card hardware for better performance
+            vb.customize ["modifyvm", :id, "--nictype1", "virtio" ]
+            vb.customize ["modifyvm", :id, "--nictype2", "virtio" ]
+        end
+
+    end
+
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/provision.sh'
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/java-setup.sh'
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/odl-setup.sh'
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/settings-xml-setup.sh'
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/apt-clean.sh'
+    config.vm.provision :shell, privileged: true, :path => 'provisioning/zero-disk.sh'
+
+
+end
