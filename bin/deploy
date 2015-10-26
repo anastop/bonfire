@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This script is responsible for deploying the multinet infrastructure
+This script is responsible for deploying the bonfire infrastructure
  across different VMs
 """
 
@@ -27,6 +27,7 @@ if __name__ == '__main__':
     """
 
     logging.getLogger().setLevel(logging.DEBUG)
+ 
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
 
@@ -44,11 +45,11 @@ if __name__ == '__main__':
 
     server_remote_path = '/tmp/profile-anywhere/profile_server.py'
     server_ip = conf['server_ip']
-    server_port = conf['master_port']
+    server_port = conf['server_port']
     ssh_port = conf['deploy']['ssh_port']
     username = conf['deploy']['username']
     password = conf['deploy']['password']
-    profiler_base_dir = conf['deploy']['profiler_base_dir']
+    profiler_base_dir = conf['deploy']['base_dir']
     # TODO hard-coded for now, fix later
     config_file = '/tmp/profile-anywhere/config/config.json'
     base_dir = '/'.join(server_remote_path.split('/')[:-2])
@@ -63,16 +64,13 @@ if __name__ == '__main__':
     ssh_sessions = {}
     total_ips = [conf['server_ip']]
     for curr_ip in total_ips:
-        print('Initiating session with Multinet VM.')
         session = netutil.ssh_connect_or_return(curr_ip, username,
                                                 password, 10, ssh_port)
         ssh_sessions[curr_ip] = session
 
-        print('Create remote directory in Multinet for storing files.')
         netutil.create_remote_directory(curr_ip, username, password,
                                         '/tmp/profile-anywhere/', ssh_port)
 
-        print('Copying handlers to Multinet VMs')
         netutil.copy_directory_to_target(curr_ip, username, password,
                                          base_dir,
                                          '/tmp/',
