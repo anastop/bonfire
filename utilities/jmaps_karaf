@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Jmaps - creates java /tmp/perf-PID.map symbol maps for all java processes.
+#
+# This is a helper script that finds all running "java" processes, then executes
+# Perf-map-agent on them all, creating symbol map files in / tmp. These map files
+# Are read by perf_events (aka "perf") when doing system profiles (specifically,
+# The "report" and "script" subcommands).
+#
+# My typical workflow is this:
+#
+# Perf record -F 99 -a -g - sleep 30; jmaps
+# Perf script> out.stacks
+# ./stackcollapse-perf.pl Out.stacks | ./flamegraph.pl --color = java --hash> out.stacks.svg
+#
+# The stackcollapse-perf.pl and flamegraph.pl programs come from:
+# Https://github.com/brendangregg/FlameGraph
+#
+# REQUIREMENTS:
+# JAVA_HOME is set
+# PERFMAPAGENT_HOME is set
+#
+# 13-Feb-2015 Brendan Gregg Created this.
+# 26-Oct-2015 George Paraskevopoulos Modified this.
+
+AGENT_HOME=$PERFMAPAGENT_HOME
+pid=`ps aux | grep java | awk '{print $2}'`
+
+if [[ ! -x $JAVA_HOME ]]; then
+    echo "ERROR: JAVA_HOME not set correctly; edit $0 and fix"
+    exit
+fi
+
+if [[ ! -x $AGENT_HOME ]]; then
+    echo "ERROR: AGENT_HOME not set correctly; edit $0 and fix"
+    exit
+fi
+
+
+echo "Fetching maps for all java processes ..."
+mapfile=/tmp/perf-$pid.map
+[[ -e $mapfile ]] && rm $mapfile
+sudo -u vagrant touch $mapfile
+sudo chown vagrant.vagrant $mapfile
+cmd="$JAVA_HOME/bin/java -XX:PermSize=16m -XX:MaxPermSize=64m -Xms32m -Xmx128m -cp $AGENT_HOME/attach-main.jar:$JAVA_HOME/lib/tools.jar net.virtualvoid.perf.AttachOnce $pid "
+user=$(ps -ho user -p $pid)
+echo "Mapping PID $pid (user $user):"
+cd $AGENT_HOME
+eval $cmd
+if [[ -e "$mapfile" ]]; then
+    sudo chown root $mapfile
+    sudo chmod 666 $mapfile
+else
+    echo "ERROR: $mapfile not created."
+fi
+echo
+echo "wc (1): $(wc $mapfile)"
+echo
