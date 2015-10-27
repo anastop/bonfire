@@ -15,7 +15,7 @@ profilers = {
 
 
 profiler_list = None
-profiler_id = 0
+profiler_id1 = 0
 
 
 
@@ -31,11 +31,12 @@ def init_env(env_conf):
 @bottle.route('/init/<profiler>', method='POST')
 def init(profiler):
     global profiler_list
+    global profiler_id1
     #receives the initial opts and starts the deamon
     profiler_conf = bottle.request.json
     profiler_list.append(profilers[profiler](profiler_conf))
-    profiler_id += 1
-    response.data = profiler_id
+    profiler_id1 += 1
+    response.data = profiler_id1
     #here we send the profiler_id
     return bottle.HTTPResponse(status=200, body=bod)
 

@@ -32,7 +32,5 @@ do
         popd
 done
 
-source setup_env_vars.sh
-
-rm -f setup_env_vars.sh 
+source $BONFIRE_HOME/setup_env_vars.sh
 
