@@ -5,6 +5,8 @@ import profilers.flight_recorder as jfr_rec
 import profilers.perf_recorder as perf_rec
 import os
 import logging
+import argparse
+import json
 
 profilers = {
     'jfr': jfr_rec.FlightRecorder,
@@ -80,4 +82,4 @@ if __name__ == '__main__':
     with open(args.json_config) as conf_file:
       conf = json.load(conf_file)
     init_env(conf_file[env_conf])
-    bottle.run(host=conf['master_ip'], port=host=conf['master_port'], debug=True)
+    bottle.run(host=conf['master_ip'], port=conf['master_port'], debug=True)
