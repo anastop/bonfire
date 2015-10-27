@@ -6,13 +6,13 @@
 if [ -z "${BONFIRE_HOME}" ]; then
         export BONFIRE_HOME=`pwd`
         cd $BONFIRE_HOME
-        touch $BONFIRE_HOME/setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
-        echo "export BONFIRE_HOME=`pwd`" >> setup_env_vars.sh
+        touch $BONFIRE_HOME/setup_env_vars.sh || (rm $BONFIRE_HOME/setup_env_vars.sh && touch $BONFIRE_HOME/setup_env_vars.sh)
+        echo "export BONFIRE_HOME=`pwd`" >> $BONFIRE_HOME/setup_env_vars.sh
 else
         cd $BONFIRE_HOME
         export BONFIRE_HOME=$BONFIRE_HOME
-        touch $BONFIRE_HOME/setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
-        echo "export BONFIRE_HOME=$BONFIRE_HOME" >> setup_env_vars.sh
+        touch $BONFIRE_HOME/setup_env_vars.sh || (rm $BONFIRE_HOME/setup_env_vars.sh && touch $BONFIRE_HOME/setup_env_vars.sh)
+        echo "export BONFIRE_HOME=$BONFIRE_HOME" >> $BONFIRE_HOME/setup_env_vars.sh
 fi
 
 # parse .gitmodules and create an array of submodules
