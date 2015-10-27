@@ -13,6 +13,19 @@ import argparse
 import sys
 import bottle
 import os
+import select
+
+
+def print_output_live(out):
+    while not stdout.channel.exit_status_ready():
+        # Only print data if there is data to read in the channel
+        if stdout.channel.recv_ready():
+            rl, wl, xl = select.select([stdout.channel], [], [], 0.0)
+            if len(rl) > 0:
+            # Print data from stdout
+                out = stdout.channel.recv(1024).decode("utf-8")
+                yield out.strip()
+
 
 if __name__ == '__main__':
     """
@@ -89,10 +102,14 @@ if __name__ == '__main__':
     create_config = base_dir + '/config/create_config_json.py'
     stdin, stdout, stderr = util.netutil.ssh_run_command(session, target_script)
     logging.info('=========== [setup dependencies] ===========')
-    for line in stdout.readlines():
-        logging.info(line)
-    for line in stderr.readlines():
-        logging.info(line)
+ 
+    for chunk in print_output_live(stdout):
+        logging.info(chunk)
+
+    for chunk in print_output_live(stderr):
+        logging.info(chunk)
+
+
     #setup the configfile using the newly created
     util.netutil.ssh_run_command(session, 'python {0}'.format(create_config))
     util.netutil.ssh_run_command(session, server_boot_command)
