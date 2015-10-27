@@ -4,7 +4,7 @@ import bottle
 import profilers.flight_recorder as jfr_rec
 import profilers.perf_recorder as perf_rec
 import os
-
+import logging
 
 profilers = {
     'jfr': jfr_rec.FlightRecorder,
@@ -64,7 +64,7 @@ def get_flamegraph(profiler_id):
 
 
 if __name__ == '__main__':
-	logging.getLogger().setLevel(logging.DEBUG)
+    logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('--json-config',
