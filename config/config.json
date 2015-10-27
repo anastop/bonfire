@@ -1,1 +1,19 @@
-{"env": {"JFR2FLAME_HOME": "", "FLAMEGRAPH_HOME": "", "PERFMAPAGENT_HOME": "", "BONFIRE_HOME": "", "M2_HOME": "/opt/maven/", "JAVA_HOME": "/opt/oraclejdk/jdk1.8.0_60", "JFR2FLAME_BIN": ""}, "server_port": 3300, "server_ip": "10.1.1.40", "deploy": {"ssh_port": 22, "username": "vagrant", "password": "vagrant", "base_dir": "/home/vagrant/bonfire"}}
+{
+    "deploy": {
+        "base_dir": "/home/vagrant/bonfire", 
+        "password": "vagrant", 
+        "ssh_port": 22, 
+        "username": "vagrant"
+    }, 
+    "env": {
+        "BONFIRE_HOME": "/tmp/bonfire/", 
+        "FLAMEGRAPH_HOME": "/tmp/bonfire//submodules/FlameGraph", 
+        "JAVA_HOME": "/opt/oraclejdk/jdk1.8.0_60", 
+        "JFR2FLAME_BIN": "", 
+        "JFR2FLAME_HOME": "/tmp/bonfire/submodules/jfr-flame-graph", 
+        "M2_HOME": "/opt/maven/", 
+        "PERFMAPAGENT_HOME": "/tmp/bonfire/submodules/perf-map-agent"
+    }, 
+    "server_ip": "10.1.1.40", 
+    "server_port": 3300
+}
