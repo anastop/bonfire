@@ -82,9 +82,17 @@ if __name__ == '__main__':
                                          ssh_port)
 
     #run the setup script on the remote endpoint
-    target_script = './' + base_dir + '/bin/setup'
+    remote_file = '{0}/bin/setup'.format(base_dir)
+
+    target_script = 'BONFIRE_HOME={0} JAVA_HOME=/opt/oraclejdk/jdk1.8.0_60 M2_HOME=/opt/maven bash {1}'.format(base_dir, remote_file)
+    logging.debug('target script = %s' % target_script)
     create_config = base_dir + '/config/create_config_json.py'
-    util.netutil.ssh_run_command(session, target_script)
+    stdin, stdout, stderr = util.netutil.ssh_run_command(session, target_script)
+    logging.info('=========== [setup dependencies] ===========')
+    for line in stdout.readlines():
+        logging.info(line)
+    for line in stderr.readlines():
+        logging.info(line)
     #setup the configfile using the newly created
     util.netutil.ssh_run_command(session, 'python {0}'.format(create_config))
     util.netutil.ssh_run_command(session, server_boot_command)

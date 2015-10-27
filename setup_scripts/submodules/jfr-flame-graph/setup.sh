@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $PANYWHERE_HOME/submodules/jfr-flame-graph
+cd $BONFIRE_HOME/submodules/jfr-flame-graph
 
 # build jfr-flame-graph
 jmc_version=`echo $(basename $JAVA_HOME/lib/missioncontrol/plugins/com.jrockit.mc.common_*.jar) | sed 's/.*_\(.*\)\.jar/\1/'`
@@ -30,8 +30,8 @@ FLAMEGRAPH_HOME=${FLAMEGRAPH_HOME:=PAR_PATH/FlameGraph}
 
 JFR2FLAME_BIN=$JFR2FLAME_HOME/bin/
 
-echo "export JFR2FLAME_HOME=$JFR2FLAME_HOME" >> $PANYWHERE_HOME/setup_env_vars.sh
-echo "export PATH=\$PATH:$JFR2FLAME_BIN" >> $PANYWHERE_HOME/setup_env_vars.sh
+echo "export JFR2FLAME_HOME=$JFR2FLAME_HOME" >> $BONFIRE_HOME/setup_env_vars.sh
+echo "export PATH=\$PATH:$JFR2FLAME_BIN" >> $BONFIRE_HOME/setup_env_vars.sh
 
 # generate wrapper scripts
 
@@ -58,6 +58,6 @@ echo '$JFR2FLAME_HOME/bin/call_jfrflamegraph -f $FILE -o $TEMP' >> bin/jfr2flame
 
 echo 'cat $TEMP | $FLAMEGRAPH_HOME/flamegraph.pl > $FLAME_FILE' >> bin/jfr2flame
 
-cd $PANYWHERE_HOME
+cd $BONFIRE_HOME
 
 

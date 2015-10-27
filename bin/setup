@@ -5,11 +5,13 @@
 
 if [ -z "${BONFIRE_HOME}" ]; then
         export BONFIRE_HOME=`pwd`
-        touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
+        cd $BONFIRE_HOME
+        touch $BONFIRE_HOME/setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
         echo "export BONFIRE_HOME=`pwd`" >> setup_env_vars.sh
 else
         cd $BONFIRE_HOME
-        touch setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
+        export BONFIRE_HOME=$BONFIRE_HOME
+        touch $BONFIRE_HOME/setup_env_vars.sh || (rm setup_env_vars.sh && touch setup_env_vars.sh)
         echo "export BONFIRE_HOME=$BONFIRE_HOME" >> setup_env_vars.sh
 fi
 
