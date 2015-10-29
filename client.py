@@ -1,7 +1,8 @@
 import argparse
 import bottle
 import logging
-
+import requests
+import json
 
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
@@ -114,7 +115,7 @@ if __name__ == '__main__':
 
     session = requests.Session()
     session.trust_env = False
-    url = 'http://{0}:{1}/'.format()
+    url = 'http://{0}:{1}/'.format(args.server_id,args.server_port)
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     post_call = session.post(
         url,

@@ -67,8 +67,9 @@ if __name__ == '__main__':
     logging.info("[profile base dir %s" % profiler_base_dir )
     # TODO hard-coded for now, fix later
     config_file = '/tmp/bonfire/config/config.json'
-    base_dir = '/'.join(server_remote_path.split('/')[:-1])
-    base_dir += '/'
+    base_dir = '/'.join(server_remote_path.split('/')[:-1]) + '/'
+    create_config = base_dir + '/util/create_config_json.py'
+
     print('[base_dir] {0}'.format(base_dir))
     #logging.info('PYTHONPATH=%s' % pythonpath)
     pythonpath = ':'.join(['/'.join(base_dir.split('/')[:-2])] + sys.path)[1:]
@@ -99,7 +100,6 @@ if __name__ == '__main__':
 
     target_script = 'BONFIRE_HOME={0} JAVA_HOME=/opt/oraclejdk/jdk1.8.0_60 M2_HOME=/opt/maven bash {1}'.format(base_dir, remote_file)
     logging.debug('target script = %s' % target_script)
-    create_config = '/config/create_config_json.py'
     _, stdout, stderr = util.netutil.ssh_run_command(session, target_script)
     logging.info('=========== [setup dependencies] ===========')
  
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
 
     #setup the configfile using the newly created
-    _, stdout, stderr = util.netutil.ssh_run_command(session, 'python {0}/{1} {0} {0}/config/config.json'.format(base_dir, create_config))
+    _, stdout, stderr = util.netutil.ssh_run_command(session, 'python {1} {0} {0}/config/config.json'.format(base_dir, create_config))
 
     for chunk in print_output_live(stdout):
         logging.info(chunk)

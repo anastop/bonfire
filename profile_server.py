@@ -20,7 +20,7 @@ profiler_id1 = 0
 
 def init_env(env_conf):
     # recieves the initial opts and starts the deamon
-    for key, value in env_conf:
+    for key, value in env_conf.items():
         if key in os.environ:
             os.environ[key] += ' ' + value
         else:
@@ -83,4 +83,4 @@ if __name__ == '__main__':
     with open(args.json_config) as conf_file:
         conf = json.load(conf_file)
     init_env(conf['env'])
-    bottle.run(host=conf['master_ip'], port=conf['master_port'], debug=True)
+    bottle.run(host=conf['server_ip'], port=conf['server_port'], debug=True)
