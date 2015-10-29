@@ -7,63 +7,59 @@ import os
 import logging
 import argparse
 import json
+import uuid
 
-profilers = {
+AVAIL_PROFILERS = {
     'jfr': jfr_rec.FlightRecorder,
     'perf': perf_rec.LinuxPerfRecorder
 }
 
 
-profiler_list = None
-profiler_id1 = 0
-
-
-def init_env(env_conf):
-    # recieves the initial opts and starts the deamon
-    for key, value in env_conf.items():
-        if key in os.environ:
-            os.environ[key] += ' ' + value
-        else:
-            os.environ[key] = value
-
+ACTIVE_PROFILERS = {}
 
 @bottle.route('/init/<profiler>', method='POST')
 def init(profiler):
-    global profiler_list
-    global profiler_id1
+    global ACTIVE_PROFILERS
     # receives the initial opts and starts the deamon
+
+    uid = uuid.uuid1().hex
     profiler_conf = bottle.request.json
-    profiler_list.append(profilers[profiler](profiler_conf))
-    profiler_id1 += 1
-    #bottle.response.data = profiler_id1
+    profiler_conf['profiler_id'] = uid
+    prof_inst = AVAIL_PROFILERS[profiler](profiler_conf)
+    
+    ACTIVE_PROFILERS[uid] = prof_inst
     # here we send the profiler_id
-    return bottle.HTTPResponse(status=200, body=profiler_id1)
+    return bottle.HTTPResponse(status=200, body=json.dumps({'profiler_id': uid}))
+
+
+@bottle.route('/setenv/<profiler_id>/<env>', method='POST')
+def setenv(profiler_id, env):
+    ACTIVE_PROFILERS[profiler_id].setup_env(env)
 
 
 @bottle.route('/start/<profiler_id>', method='POST')
 def start(profiler_id):
     # in order to start a recording we get an opts argument
-    profiler_list[profiler_id].setup_karaf_env()
-    profiler_list[profiler_id].start()
+    start_conf = bottle.request.json
+    ACTIVE_PROFILERS[profiler_id].start(start_conf['pid'], start_conf['recording_name'])
 
 
 @bottle.route('/stop/<profiler_id>', method='POST')
 def stop(profiler_id):
-    profiler_list[profiler_id].stop()
+    recording_file = ACTIVE_PROFILERS[profiler_id].stop()
+    return bottle.HTTPResponse(status=200, body=json.dumps({'recording_file': recording_file}))
 
 
-@bottle.route('/get_data/<profiler_id>', method='POST')
-def get_data(profiler_id):
-    opts = profiler_list[profiler_id].opts
-    return bottle.static_file(opts['recording_file'], opts['output_dir'])
-    # here is the endpointa
+@bottle.route('/get_data/<profiler_id>/<filename>', method='GET')
+def get_data(profiler_id, filename):
+    out_dir = ACTIVE_PROFILERS[profiler_id].opts['output_dir']
+    return bottle.static_file(filename, root=out_dir, download=filename)
 
 
-@bottle.route('/get_flamegraph/<profiler_id>', method='POST')
-def get_flamegraph(profiler_id):
-    # here we should get the binary blobs
-    opts = profiler_list[profiler_id].opts
-    return bottle.static_file(opts['flamegraph_name'], opts['output_dir'])
+@bottle.route('/generate_flamegraph/<profiler_id>/<src_file>', method='POST')
+def generate_flamegraph(profiler_id, src_file):
+    flamegraph_file = ACTIVE_PROFILERS[profiler_id].generate_flamegraph(src_file)
+    return bottle.HTTPResponse(status=200, body=json.dumps({'flamegraph_file': flamegraph_file}))
 
 
 if __name__ == '__main__':
@@ -82,5 +78,4 @@ if __name__ == '__main__':
     conf = {}
     with open(args.json_config) as conf_file:
         conf = json.load(conf_file)
-    init_env(conf['env'])
     bottle.run(host=conf['server_ip'], port=conf['server_port'], debug=True)

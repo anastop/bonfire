@@ -55,7 +55,7 @@ class LinuxPerfRecorder(profilers.abc_profiler.ABCProfiler):
             self.opts['pid'], _ = os.waitpid(cpid, 0)
             cmd = 'sudo perf script | {1}/stackcollapse-perf.pl | flamegraph.pl --color=java --hash > {2}'.format(
 #                perf_data_file,
-                self.opts['FLAMEGRAPH_HOME'],
+                self.opts['env']['FLAMEGRAPH_HOME'],
                 flamegraph_file)
 #            cmd = 'mv perf.data {0}'.format(self.opts['recording_file'])
 #            cp.blockable_shell(cmd, block_shell=True)

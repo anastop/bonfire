@@ -88,6 +88,9 @@ if __name__ == '__main__':
     util.netutil.create_remote_directory(server_ip, username, password,
                                         '/tmp/bonfire/', ssh_port)
 
+    util.netutil.create_remote_directory(server_ip, username, password,
+                                        '/tmp/bonfire/results/', ssh_port)
+
     remote_dir = '/tmp/'
     print('copying from {0} to {1}'.format(profiler_base_dir,remote_dir))
     util.netutil.copy_directory_to_target(server_ip, username, password,
